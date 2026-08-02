@@ -1,0 +1,358 @@
+================================================================================
+If statement
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    if x > 0:
+        return 1
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (if_statement
+        condition: (expression
+          (binary_expression
+            left_operand: (expression
+              (primary_expression
+                (identifier)))
+            right_operand: (expression
+              (primary_expression
+                (integer_literal)))))
+        (indented_body
+          (return_statement
+            return_value: (expression
+              (primary_expression
+                (integer_literal))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+If-elif-else
+================================================================================
+
+package testing
+
+public function classify( I64 value ) -> String:
+    if value > 0:
+        return "positive"
+    elif value < 0:
+        return "negative"
+    else:
+        return "zero"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)))
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (if_statement
+        condition: (expression
+          (binary_expression
+            left_operand: (expression
+              (primary_expression
+                (identifier)))
+            right_operand: (expression
+              (primary_expression
+                (integer_literal)))))
+        (indented_body
+          (return_statement
+            return_value: (expression
+              (primary_expression
+                (string_literal)))))
+        (elif_clause
+          condition: (expression
+            (binary_expression
+              left_operand: (expression
+                (primary_expression
+                  (identifier)))
+              right_operand: (expression
+                (primary_expression
+                  (integer_literal)))))
+          (indented_body
+            (return_statement
+              return_value: (expression
+                (primary_expression
+                  (string_literal))))))
+        (else_clause
+          (indented_body
+            (return_statement
+              return_value: (expression
+                (primary_expression
+                  (string_literal))))))))))
+
+================================================================================
+While loop
+================================================================================
+
+package testing
+
+public function countdown( I64 start ) -> Void:
+    I64 counter = start
+    while counter > 0:
+        counter = counter - 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)))
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (identifier))))
+      (while_statement
+        condition: (expression
+          (binary_expression
+            left_operand: (expression
+              (primary_expression
+                (identifier)))
+            right_operand: (expression
+              (primary_expression
+                (integer_literal)))))
+        (indented_body
+          (assignment_statement
+            assignment_target: (expression
+              (primary_expression
+                (identifier)))
+            assigned_value: (expression
+              (binary_expression
+                left_operand: (expression
+                  (primary_expression
+                    (identifier)))
+                right_operand: (expression
+                  (primary_expression
+                    (integer_literal)))))))))))
+
+================================================================================
+For range loop
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    for I64 index in items:
+        pass
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (for_range_statement
+        iterator_type: (type_specifier
+          (identifier))
+        iterator_name: (identifier)
+        iterable: (expression
+          (primary_expression
+            (identifier)))
+        (indented_body
+          (pass_statement)))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+For C-style loop
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    for I64 index = 0; index < 10; index++:
+        pass
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (for_cstyle_statement
+        initializer_type: (type_specifier
+          (identifier))
+        initializer_name: (identifier)
+        initializer_value: (expression
+          (primary_expression
+            (integer_literal)))
+        loop_condition: (expression
+          (binary_expression
+            left_operand: (expression
+              (primary_expression
+                (identifier)))
+            right_operand: (expression
+              (primary_expression
+                (integer_literal)))))
+        loop_update: (expression
+          (primary_expression
+            (postfix_expression
+              postfix_operand: (expression
+                (primary_expression
+                  (identifier))))))
+        (indented_body
+          (pass_statement)))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Try-except-finally
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    try:
+        risky()
+    except Error as error:
+        pass
+    finally:
+        cleanup()
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (try_statement
+        (indented_body
+          (expression_statement
+            (expression
+              (primary_expression
+                (call_expression
+                  called_function: (expression
+                    (primary_expression
+                      (identifier)))
+                  (argument_list))))))
+        (except_clause
+          exception_type: (type_specifier
+            (identifier))
+          exception_binding: (identifier)
+          (indented_body
+            (pass_statement)))
+        (finally_clause
+          (indented_body
+            (expression_statement
+              (expression
+                (primary_expression
+                  (call_expression
+                    called_function: (expression
+                      (primary_expression
+                        (identifier)))
+                    (argument_list))))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Break and continue
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    while True:
+        if done:
+            break
+        continue
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (while_statement
+        condition: (expression
+          (primary_expression
+            (boolean_literal)))
+        (indented_body
+          (if_statement
+            condition: (expression
+              (primary_expression
+                (identifier)))
+            (indented_body
+              (break_statement)))
+          (continue_statement)))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
