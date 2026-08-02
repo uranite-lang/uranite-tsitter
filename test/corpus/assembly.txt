@@ -1,0 +1,223 @@
+================================================================================
+Inline assembly with all sections
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 result = 0
+    asm volatile "syscall" : output( "=a" result ) : input( "a" 60, "D" 0 ) : clobber( "rcx", "r11" )
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (inline_assembly_statement
+        assembly_template: (string_literal)
+        output_operand_list: (assembly_output_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (identifier)))))
+        input_operand_list: (assembly_input_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (integer_literal))))
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (integer_literal)))))
+        clobber_register_list: (assembly_clobber_clause
+          (string_literal)
+          (string_literal)))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Assembly with no operands
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    asm volatile "pause"
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (inline_assembly_statement
+        assembly_template: (string_literal))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Assembly with empty clobber
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    asm volatile "nop" : output( "=r" out ) : input( "r" inp ) : clobber()
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (inline_assembly_statement
+        assembly_template: (string_literal)
+        output_operand_list: (assembly_output_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (identifier)))))
+        input_operand_list: (assembly_input_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (identifier)))))
+        clobber_register_list: (assembly_clobber_clause))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Assembly without volatile
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 result = 0
+    asm "syscall" : output( "={rax}" result ) : input( "{rax}" 60 ) : clobber( "rcx", "r11", "memory" )
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (inline_assembly_statement
+        assembly_template: (string_literal)
+        output_operand_list: (assembly_output_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (identifier)))))
+        input_operand_list: (assembly_input_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (integer_literal)))))
+        clobber_register_list: (assembly_clobber_clause
+          (string_literal)
+          (string_literal)
+          (string_literal)))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Assembly with empty output
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    asm volatile "pause" : output() : input( "{rdi}" ptr ) : clobber( "memory" )
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (inline_assembly_statement
+        assembly_template: (string_literal)
+        output_operand_list: (assembly_output_clause)
+        input_operand_list: (assembly_input_clause
+          (assembly_operand
+            operand_constraint: (string_literal)
+            operand_variable: (expression
+              (primary_expression
+                (identifier)))))
+        clobber_register_list: (assembly_clobber_clause
+          (string_literal)))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
