@@ -1,0 +1,361 @@
+================================================================================
+Package declaration
+================================================================================
+
+package uranite.lang.core
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier))))
+
+================================================================================
+Simple function declaration
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Function with parameters
+================================================================================
+
+package testing
+
+function add( I64 left, I64 right ) -> I64:
+    return left + right
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    declared_name: (identifier)
+    (parameter_list
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (identifier))
+        declared_name: (identifier))
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)))
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (return_statement
+        return_value: (expression
+          (binary_expression
+            left_operand: (expression
+              (primary_expression
+                (identifier)))
+            right_operand: (expression
+              (primary_expression
+                (identifier)))))))))
+
+================================================================================
+Class declaration with extends and implements
+================================================================================
+
+package testing
+
+public class Dog extends Animal implements Walkable, Feedable:
+    public String name
+
+    public function Dog( self, String name ) -> Void:
+        self.name = name
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (class_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    base_class_type: (type_specifier
+      (identifier))
+    implemented_interface: (type_specifier
+      (identifier))
+    implemented_interface: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        (access_modifier)
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier))
+      (function_declaration
+        (access_modifier)
+        declared_name: (identifier)
+        (parameter_list
+          (parameter_declaration
+            (self_parameter))
+          (parameter_declaration
+            parameter_type: (type_specifier
+              (identifier))
+            declared_name: (identifier)))
+        return_type: (type_specifier
+          (identifier))
+        (indented_body
+          (assignment_statement
+            assignment_target: (expression
+              (primary_expression
+                (member_access_expression
+                  accessed_object: (expression
+                    (primary_expression
+                      (self_expression)))
+                  accessed_member: (identifier))))
+            assigned_value: (expression
+              (primary_expression
+                (identifier)))))))))
+
+================================================================================
+Struct declaration
+================================================================================
+
+package testing
+
+public struct Point:
+    public I64 xCoord
+    public I64 yCoord
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (struct_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (indented_body
+      (variable_declaration
+        (access_modifier)
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier))
+      (variable_declaration
+        (access_modifier)
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)))))
+
+================================================================================
+Enum declaration with backed type
+================================================================================
+
+package testing
+
+public enum Color backed I64:
+    unit Red 0
+    unit Green 1
+    unit Blue 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (enum_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    backing_type: (type_specifier
+      (identifier))
+    (indented_body
+      (enum_variant
+        variant_name: (identifier)
+        variant_backing_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (enum_variant
+        variant_name: (identifier)
+        variant_backing_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (enum_variant
+        variant_name: (identifier)
+        variant_backing_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Interface declaration
+================================================================================
+
+package testing
+
+public interface Comparable<T>:
+    public function compareTo( self, T other ) -> I64:
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (interface_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (generic_parameter_list
+      (generic_parameter
+        type_parameter_name: (identifier)))
+    (indented_body
+      (function_declaration
+        (access_modifier)
+        declared_name: (identifier)
+        (parameter_list
+          (parameter_declaration
+            (self_parameter))
+          (parameter_declaration
+            parameter_type: (type_specifier
+              (identifier))
+            declared_name: (identifier)))
+        return_type: (type_specifier
+          (identifier))))))
+
+================================================================================
+Extern function declaration
+================================================================================
+
+package testing
+
+extern function printf( *I8 format, ... ) -> I32;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (extern_declaration
+    declared_name: (identifier)
+    (parameter_list
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (pointer_type
+            pointed_type: (type_specifier
+              (identifier))))
+        declared_name: (identifier))
+      (parameter_declaration))
+    return_type: (type_specifier
+      (identifier))))
+
+================================================================================
+Constant declaration
+================================================================================
+
+package testing
+
+public const I64 MAX_SIZE = 1024
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (constant_declaration
+    (access_modifier)
+    constant_type: (type_specifier
+      (identifier))
+    declared_name: (identifier)
+    constant_value: (expression
+      (primary_expression
+        (integer_literal)))))
+
+================================================================================
+Type alias declaration
+================================================================================
+
+package testing
+
+public type StringList = ArrayList<String>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (type_alias_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    aliased_type: (type_specifier
+      (generic_type_specifier
+        generic_base_name: (identifier)
+        (generic_argument_list
+          (type_specifier
+            (identifier)))))))
+
+================================================================================
+Property declaration
+================================================================================
+
+package testing
+
+public class Foo:
+    I64 stored
+
+    public property value( self ) -> I64:
+        return self.stored
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (class_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier))
+      (function_declaration
+        (access_modifier)
+        declared_name: (identifier)
+        (parameter_list
+          (parameter_declaration
+            (self_parameter)))
+        return_type: (type_specifier
+          (identifier))
+        (indented_body
+          (return_statement
+            return_value: (expression
+              (primary_expression
+                (member_access_expression
+                  accessed_object: (expression
+                    (primary_expression
+                      (self_expression)))
+                  accessed_member: (identifier))))))))))
