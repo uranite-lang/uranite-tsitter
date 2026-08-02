@@ -1,0 +1,165 @@
+================================================================================
+Simple import
+================================================================================
+
+package testing
+
+import uranite.lang.core
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier))))
+
+================================================================================
+Import with alias
+================================================================================
+
+package testing
+
+import uranite.lang.core as core
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier))
+    import_alias: (identifier)))
+
+================================================================================
+From import single entity
+================================================================================
+
+package testing
+
+from uranite.language.float import Float
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier))
+    imported_entities: (import_item_list
+      (import_item
+        entity_name: (identifier)))))
+
+================================================================================
+From import multiple entities
+================================================================================
+
+package testing
+
+from uranite.testing.assertions import assertTrue, assertFalse, assertEqualI64
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier))
+    imported_entities: (import_item_list
+      (import_item
+        entity_name: (identifier))
+      (import_item
+        entity_name: (identifier))
+      (import_item
+        entity_name: (identifier)))))
+
+================================================================================
+From import with braces
+================================================================================
+
+package testing
+
+from uranite.os.task.task import {
+    Task,
+    TaskState,
+    BlockReason
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier)
+      (identifier))
+    imported_entities: (import_item_brace_list
+      (import_item
+        entity_name: (identifier))
+      (import_item
+        entity_name: (identifier))
+      (import_item
+        entity_name: (identifier)))))
+
+================================================================================
+From import wildcard
+================================================================================
+
+package testing
+
+from uranite.lang import *
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier))))
+
+================================================================================
+From import with alias
+================================================================================
+
+package testing
+
+from uranite.io.console import putsln as println
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (import_statement
+    module_path: (dotted_identifier
+      (identifier)
+      (identifier)
+      (identifier))
+    imported_entities: (import_item_list
+      (import_item
+        entity_name: (identifier)
+        import_alias: (identifier)))))

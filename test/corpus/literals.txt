@@ -1,0 +1,197 @@
+================================================================================
+Integer literals
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 decimal = 42
+    I64 binary = 0b1010
+    I64 octal = 0o77
+    I64 hex = 0xFF
+    I64 underscored = 1_000_000
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (integer_literal))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Float literal
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    Float pi = 3.14
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (float_literal))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+String and character literals
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    String greeting = "hello world"
+    I8 letter = 'A'
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (string_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (character_literal))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Boolean and None literals
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    Boolean yes = True
+    Boolean no = False
+    ?I64 nothing = None
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (boolean_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (boolean_literal))))
+      (variable_declaration
+        variable_type: (type_specifier
+          (nullable_type
+            inner_type: (type_specifier
+              (identifier))))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (none_literal))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))

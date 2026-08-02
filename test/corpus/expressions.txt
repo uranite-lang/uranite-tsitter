@@ -1,0 +1,475 @@
+================================================================================
+Binary arithmetic
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 result = 1 + 2 * 3
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (binary_expression
+            left_operand: (expression
+              (primary_expression
+                (integer_literal)))
+            right_operand: (expression
+              (binary_expression
+                left_operand: (expression
+                  (primary_expression
+                    (integer_literal)))
+                right_operand: (expression
+                  (primary_expression
+                    (integer_literal))))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Boolean operators
+================================================================================
+
+package testing
+
+public function check( Boolean left, Boolean right ) -> Boolean:
+    return left and right or not left
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (identifier))
+        declared_name: (identifier))
+      (parameter_declaration
+        parameter_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)))
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (return_statement
+        return_value: (expression
+          (binary_expression
+            left_operand: (expression
+              (binary_expression
+                left_operand: (expression
+                  (primary_expression
+                    (identifier)))
+                right_operand: (expression
+                  (primary_expression
+                    (identifier)))))
+            right_operand: (expression
+              (unary_expression
+                unary_operand: (expression
+                  (primary_expression
+                    (identifier)))))))))))
+
+================================================================================
+New expression
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    Point pt = new Point( 10, 20 )
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (new_expression
+              constructed_type: (type_specifier
+                (identifier))
+              (argument_list
+                (expression
+                  (primary_expression
+                    (integer_literal)))
+                (expression
+                  (primary_expression
+                    (integer_literal))))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Member access and method call
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 length = text.length()
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (call_expression
+              called_function: (expression
+                (primary_expression
+                  (member_access_expression
+                    accessed_object: (expression
+                      (primary_expression
+                        (identifier)))
+                    accessed_member: (identifier))))
+              (argument_list)))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Cast expression
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I32 narrow = wide as I32
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (cast_expression
+            cast_operand: (expression
+              (primary_expression
+                (identifier)))
+            target_type: (type_specifier
+              (identifier)))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Subscript expression
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 element = data[0]
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (subscript_expression
+              subscripted_object: (expression
+                (primary_expression
+                  (identifier)))
+              subscript_index: (expression
+                (primary_expression
+                  (integer_literal)))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Lambda expression
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    Callable<I64, <I64>> doubler = lambda I64 value: value * 2
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (callable_type
+            callable_return_type: (type_specifier
+              (identifier))
+            (type_specifier
+              (identifier))))
+        declared_name: (identifier)
+        initial_value: (expression
+          (lambda_expression
+            parameter_type: (type_specifier
+              (identifier))
+            parameter_name: (identifier)
+            lambda_body: (expression
+              (binary_expression
+                left_operand: (expression
+                  (primary_expression
+                    (identifier)))
+                right_operand: (expression
+                  (primary_expression
+                    (integer_literal))))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Keyword argument in call
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    greet( name="World", prefix="Hello" )
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (expression_statement
+        (expression
+          (primary_expression
+            (call_expression
+              called_function: (expression
+                (primary_expression
+                  (identifier)))
+              (argument_list
+                (keyword_argument
+                  argument_name: (identifier)
+                  argument_value: (expression
+                    (primary_expression
+                      (string_literal))))
+                (keyword_argument
+                  argument_name: (identifier)
+                  argument_value: (expression
+                    (primary_expression
+                      (string_literal)))))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Addressof expression
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    I64 address = addressof value
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (identifier))
+        declared_name: (identifier)
+        initial_value: (expression
+          (unary_expression
+            unary_operand: (expression
+              (primary_expression
+                (identifier))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Nullable type and None
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    ?I64 maybe = None
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (nullable_type
+            inner_type: (type_specifier
+              (identifier))))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (none_literal))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+List literal
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    ArrayList<I64> items = [1, 2, 3]
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (variable_declaration
+        variable_type: (type_specifier
+          (generic_type_specifier
+            generic_base_name: (identifier)
+            (generic_argument_list
+              (type_specifier
+                (identifier)))))
+        declared_name: (identifier)
+        initial_value: (expression
+          (primary_expression
+            (list_literal
+              (expression
+                (primary_expression
+                  (integer_literal)))
+              (expression
+                (primary_expression
+                  (integer_literal)))
+              (expression
+                (primary_expression
+                  (integer_literal)))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
