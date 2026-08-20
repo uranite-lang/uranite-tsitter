@@ -24,6 +24,52 @@
     }
   },
   {
+    "type": "assembly_arch_variant",
+    "named": true,
+    "fields": {
+      "assembly_template": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string_literal",
+            "named": true
+          }
+        ]
+      },
+      "clobber_register_list": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "assembly_clobber_clause",
+            "named": true
+          }
+        ]
+      },
+      "input_operand_list": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "assembly_input_clause",
+            "named": true
+          }
+        ]
+      },
+      "output_operand_list": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "assembly_output_clause",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "assembly_clobber_clause",
     "named": true,
     "fields": {},
@@ -233,11 +279,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "argument_list",
+          "named": true
+        },
+        {
+          "type": "generic_argument_list",
           "named": true
         }
       ]
@@ -923,7 +973,27 @@
           }
         ]
       },
+      "iterator_name2": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
       "iterator_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_specifier",
+            "named": true
+          }
+        ]
+      },
+      "iterator_type2": {
         "multiple": false,
         "required": false,
         "types": [
@@ -1517,7 +1587,7 @@
     "fields": {
       "assembly_template": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "string_literal",
@@ -1555,6 +1625,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assembly_arch_variant",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -2159,6 +2239,10 @@
           "named": true
         },
         {
+          "type": "set_literal",
+          "named": true
+        },
+        {
           "type": "string_literal",
           "named": true
         },
@@ -2225,6 +2309,21 @@
     "type": "self_parameter",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "set_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "source_file",
