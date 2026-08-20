@@ -22,6 +22,9 @@ module.exports = grammar({
     [conflictTable.generic_type_specifier, conflictTable.primary_expression],
     [conflictTable.qualified_pattern, conflictTable.primary_expression],
     [conflictTable.type_specifier, conflictTable.primary_expression],
+    [conflictTable.binary_expression, conflictTable.call_expression],
+    [conflictTable.binary_expression, conflictTable.unary_expression, conflictTable.call_expression],
+    [conflictTable.binary_expression, conflictTable.await_expression, conflictTable.call_expression],
   ],
 
   rules: {
@@ -430,6 +433,11 @@ module.exports = grammar({
       'for',
       optional(field('iterator_type', ruleFactory.type_specifier)),
       field('iterator_name', ruleFactory.identifier),
+      optional(seq(
+        ',',
+        optional(field('iterator_type2', ruleFactory.type_specifier)),
+        field('iterator_name2', ruleFactory.identifier),
+      )),
       'in',
       field('iterable', ruleFactory.expression),
       ruleFactory.indented_body,
@@ -608,7 +616,12 @@ module.exports = grammar({
     // Inline Assembly
     // ==========================================
 
-    inline_assembly_statement: ruleFactory => seq(
+    inline_assembly_statement: ruleFactory => choice(
+      ruleFactory._inline_assembly_arch_block,
+      ruleFactory._inline_assembly_single,
+    ),
+
+    _inline_assembly_single: ruleFactory => seq(
       'asm',
       optional('volatile'),
       field('assembly_template', ruleFactory.string_literal),
@@ -625,6 +638,43 @@ module.exports = grammar({
         )),
       )),
     ),
+
+    _inline_assembly_arch_block: ruleFactory => seq(
+      'asm',
+      optional('volatile'),
+      ':',
+      ruleFactory._indent,
+      repeat1(ruleFactory.assembly_arch_variant),
+      ruleFactory._dedent,
+    ),
+
+    assembly_arch_variant: ruleFactory => seq(
+      field('target_arch', ruleFactory._assembly_arch_name),
+      field('assembly_template', ruleFactory.string_literal),
+      optional(seq(
+        ':',
+        optional(field('output_operand_list', ruleFactory.assembly_output_clause)),
+        optional(seq(
+          ':',
+          optional(field('input_operand_list', ruleFactory.assembly_input_clause)),
+          optional(seq(
+            ':',
+            optional(field('clobber_register_list', ruleFactory.assembly_clobber_clause)),
+          )),
+        )),
+      )),
+    ),
+
+    _assembly_arch_name: ruleFactory => token(choice(
+      seq('x86', '-', '64'),
+      'aarch64',
+      'arm',
+      'riscv64',
+      'riscv32',
+      'mips',
+      'wasm32',
+      'wasm64',
+    )),
 
     assembly_output_clause: ruleFactory => seq(
       'output',
@@ -773,6 +823,7 @@ module.exports = grammar({
       ruleFactory.new_expression,
       ruleFactory.parenthesized_expression,
       ruleFactory.list_literal,
+      ruleFactory.set_literal,
       ruleFactory.dict_literal,
       ruleFactory.comprehension_expression,
       ruleFactory.member_access_expression,
@@ -804,6 +855,14 @@ module.exports = grammar({
         optional(','),
       )),
       ']',
+    ),
+
+    set_literal: ruleFactory => seq(
+      '{',
+      ruleFactory.expression,
+      repeat(seq(',', ruleFactory.expression)),
+      optional(','),
+      '}',
     ),
 
     dict_literal: ruleFactory => seq(
@@ -855,6 +914,7 @@ module.exports = grammar({
 
     call_expression: ruleFactory => prec.left(16, seq(
       field('called_function', ruleFactory.expression),
+      optional(ruleFactory.generic_argument_list),
       ruleFactory.argument_list,
     )),
 
