@@ -526,7 +526,7 @@
     "fields": {
       "deferred_expression": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "expression",
@@ -534,6 +534,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "indented_body",
+          "named": true
+        }
+      ]
     }
   },
   {

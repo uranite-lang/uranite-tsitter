@@ -601,7 +601,10 @@ module.exports = grammar({
 
     defer_statement: ruleFactory => prec.right(seq(
       'defer',
-      field('deferred_expression', ruleFactory.expression),
+      choice(
+        ruleFactory.indented_body,
+        field('deferred_expression', ruleFactory.expression),
+      ),
     )),
 
     yield_statement: ruleFactory => prec.right(seq(
