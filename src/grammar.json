@@ -2853,12 +2853,21 @@
             "value": "defer"
           },
           {
-            "type": "FIELD",
-            "name": "deferred_expression",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "indented_body"
+              },
+              {
+                "type": "FIELD",
+                "name": "deferred_expression",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              }
+            ]
           }
         ]
       }
