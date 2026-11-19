@@ -156,6 +156,7 @@ module.exports = grammar({
       'final',
       'async',
       'native',
+      'naked',
     ),
 
     class_declaration: ruleFactory => seq(
