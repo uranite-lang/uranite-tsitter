@@ -48,6 +48,7 @@
   "abstract"
   "final"
   "native"
+  "naked"
   "override"
   "static"
   "virtual"
