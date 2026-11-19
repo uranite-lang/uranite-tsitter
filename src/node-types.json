@@ -3236,6 +3236,10 @@
     "named": false
   },
   {
+    "type": "naked",
+    "named": false
+  },
+  {
     "type": "native",
     "named": false
   },
