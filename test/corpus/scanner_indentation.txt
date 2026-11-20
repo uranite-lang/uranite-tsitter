@@ -1,0 +1,159 @@
+================================================================================
+Nested indented block at EOF without trailing newline
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    if true:
+        return 1
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (if_statement
+        condition: (expression
+          (primary_expression
+            (identifier)))
+        (indented_body
+          (return_statement
+            return_value: (expression
+              (primary_expression
+                (integer_literal)))))))))
+
+================================================================================
+Function body at EOF without trailing newline
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    return 0
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Column-0 comment inside indented block
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    if true:
+        return 1
+# comment at column 0
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (if_statement
+        condition: (expression
+          (primary_expression
+            (identifier)))
+        (indented_body
+          (return_statement
+            return_value: (expression
+              (primary_expression
+                (integer_literal))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+Deeply indented comment inside indented block
+================================================================================
+
+package testing
+
+public function main() -> I32:
+    if true:
+            # deeply indented comment
+        return 1
+    return 0
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (if_statement
+        condition: (expression
+          (primary_expression
+            (identifier)))
+        (indented_body
+          (return_statement
+            return_value: (expression
+              (primary_expression
+                (integer_literal))))))
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
+================================================================================
+CR-only line endings
+================================================================================
+
+package testingpublic function main() -> I32:    return 0
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_declaration
+    package_path: (dotted_identifier
+      (identifier)))
+  (function_declaration
+    (access_modifier)
+    declared_name: (identifier)
+    (parameter_list)
+    return_type: (type_specifier
+      (identifier))
+    (indented_body
+      (return_statement
+        return_value: (expression
+          (primary_expression
+            (integer_literal)))))))
+
