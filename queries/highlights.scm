@@ -55,6 +55,7 @@
   "new"
   "delete"
   "Readonly"
+  "readonly"
   "mut"
 ] @keyword.modifier
 
@@ -92,6 +93,10 @@
   "raises"
 ] @keyword
 
+; Type keywords
+(callable_type "Callable" @type.builtin)
+(meta_type "Meta" @type.builtin)
+
 ; Self reference
 (self_parameter) @variable.builtin
 
@@ -110,6 +115,8 @@
   declared_name: (identifier) @type.definition)
 (trait_declaration
   declared_name: (identifier) @type.definition)
+(type_alias_declaration
+  declared_name: (identifier) @type.definition)
 
 ; Type specifiers
 (type_specifier
@@ -120,6 +127,8 @@
   "?" @operator)
 (pointer_type
   "*" @operator)
+(reference_type
+  "&" @operator)
 
 ; Generic type parameters
 (generic_parameter
@@ -127,6 +136,8 @@
 
 ; Function declarations
 (function_declaration
+  declared_name: (identifier) @function)
+(extern_declaration
   declared_name: (identifier) @function)
 
 ; Function calls
@@ -156,6 +167,8 @@
 ; Parameters
 (parameter_declaration
   declared_name: (identifier) @variable.parameter)
+(lambda_expression
+  parameter_name: (identifier) @variable.parameter)
 
 ; Variables
 (variable_declaration
@@ -219,7 +232,6 @@
   "^"
   "~"
   "<<"
-  ">>"
   "="
   "+="
   "-="
@@ -230,7 +242,6 @@
   "|="
   "^="
   "<<="
-  ">>="
   "->"
   "=>"
   ".."
@@ -255,17 +266,15 @@
 ] @punctuation.delimiter
 
 ; Inline assembly
-(inline_assembly_statement
-  "asm" @keyword
-  "volatile" @keyword)
+(inline_assembly_statement "asm" @keyword)
+(inline_assembly_statement "volatile" @keyword)
 (inline_assembly_statement
   assembly_template: (string_literal) @string.special)
-(assembly_output_clause
-  "output" @keyword.directive)
-(assembly_input_clause
-  "input" @keyword.directive)
-(assembly_clobber_clause
-  "clobber" @keyword.directive)
+(assembly_arch_variant
+  assembly_template: (string_literal) @string.special)
+(assembly_output_clause "output" @keyword.directive)
+(assembly_input_clause "input" @keyword.directive)
+(assembly_clobber_clause "clobber" @keyword.directive)
 
 ; Identifiers (catch-all, lowest priority)
 (identifier) @variable
