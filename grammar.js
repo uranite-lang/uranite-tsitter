@@ -18,19 +18,60 @@ module.exports = grammar({
 
   conflicts: conflictTable => [
     [conflictTable.type_specifier, conflictTable.generic_type_specifier],
-    [conflictTable.function_modifier, conflictTable.class_modifier],
-    [conflictTable.generic_type_specifier, conflictTable.primary_expression],
-    [conflictTable.qualified_pattern, conflictTable.primary_expression],
+    [conflictTable.type_specifier, conflictTable._base_type],
     [conflictTable.type_specifier, conflictTable.primary_expression],
+    [conflictTable.type_specifier, conflictTable.expression],
+    [conflictTable.generic_type_specifier, conflictTable.primary_expression],
+    [conflictTable._base_type, conflictTable.primary_expression],
+    [conflictTable._base_type, conflictTable.expression],
+    [conflictTable.reference_type, conflictTable.unary_expression],
+    [conflictTable.pointer_type, conflictTable.unary_expression],
+    [conflictTable.array_type, conflictTable.list_literal],
+    [conflictTable.array_type, conflictTable.subscript_expression],
+    [conflictTable.tuple_type, conflictTable.parenthesized_expression],
+    [conflictTable.function_modifier, conflictTable.class_modifier],
     [conflictTable.binary_expression, conflictTable.call_expression],
+    [conflictTable.binary_expression, conflictTable.unary_expression],
+    [conflictTable.binary_expression, conflictTable.await_expression],
     [conflictTable.binary_expression, conflictTable.unary_expression, conflictTable.call_expression],
     [conflictTable.binary_expression, conflictTable.await_expression, conflictTable.call_expression],
+    [conflictTable.qualified_pattern, conflictTable.primary_expression],
+    [conflictTable.variable_declaration, conflictTable.expression_statement],
+    [conflictTable.variable_declaration, conflictTable.constant_declaration],
+    [conflictTable.parameter_declaration, conflictTable.type_specifier],
+    [conflictTable.parameter_declaration, conflictTable._base_type],
+    [conflictTable.lambda_expression, conflictTable.function_declaration],
+    [conflictTable.function_type, conflictTable.lambda_expression],
+    [conflictTable.function_type, conflictTable.parameter_list],
+    [conflictTable.function_type, conflictTable.function_declaration],
+    [conflictTable.enum_variant, conflictTable.argument_list],
+    [conflictTable.enum_variant, conflictTable.expression_statement],
+    [conflictTable.function_modifier, conflictTable.variable_declaration],
+    [conflictTable.function_modifier, conflictTable.class_modifier, conflictTable.variable_declaration],
+    [conflictTable.class_modifier, conflictTable.variable_declaration],
+    [conflictTable.new_expression],
   ],
 
   rules: {
     source_file: ruleFactory => seq(
       optional(ruleFactory.package_declaration),
-      repeat(ruleFactory._statement),
+      repeat(ruleFactory._top_level_item),
+    ),
+
+    _top_level_item: ruleFactory => choice(
+      ruleFactory.docstring_comment,
+      ruleFactory.import_statement,
+      ruleFactory.export_block,
+      ruleFactory.function_declaration,
+      ruleFactory.class_declaration,
+      ruleFactory.struct_declaration,
+      ruleFactory.enum_declaration,
+      ruleFactory.interface_declaration,
+      ruleFactory.trait_declaration,
+      ruleFactory.implement_declaration,
+      ruleFactory.extern_declaration,
+      ruleFactory.constant_declaration,
+      ruleFactory.type_alias_declaration,
     ),
 
     package_declaration: ruleFactory => seq(
@@ -70,14 +111,12 @@ module.exports = grammar({
       ruleFactory.raise_statement,
       ruleFactory.delete_statement,
       ruleFactory.defer_statement,
-      ruleFactory.yield_statement,
       ruleFactory.pass_statement,
       ruleFactory.inline_assembly_statement,
       ruleFactory.if_statement,
       ruleFactory.while_statement,
       ruleFactory.for_range_statement,
       ruleFactory.for_cstyle_statement,
-      ruleFactory.match_statement,
       ruleFactory.switch_statement,
       ruleFactory.try_statement,
       ruleFactory.unsafe_block,
@@ -165,8 +204,8 @@ module.exports = grammar({
       'class',
       field('declared_name', ruleFactory.identifier),
       optional(ruleFactory.generic_parameter_list),
-      optional(seq('extends', field('base_class_type', ruleFactory.type_specifier))),
-      optional(seq('implements', ruleFactory._implements_type_list)),
+      optional(seq('extends', commaSep1(field('base_class_type', ruleFactory.type_specifier)))),
+      optional(seq('implements', commaSep1(field('implemented_interface', ruleFactory.type_specifier)))),
       choice(ruleFactory.indented_body, ';'),
     ),
 
@@ -177,9 +216,11 @@ module.exports = grammar({
 
     class_modifier: ruleFactory => choice(
       'Readonly',
+      'readonly',
       'abstract',
       'final',
       'native',
+      'naked',
     ),
 
     struct_declaration: ruleFactory => seq(
@@ -194,22 +235,28 @@ module.exports = grammar({
       optional(ruleFactory.access_modifier),
       'enum',
       field('declared_name', ruleFactory.identifier),
+      optional(ruleFactory.generic_parameter_list),
       optional(seq('backed', field('backing_type', ruleFactory.type_specifier))),
-      ruleFactory.indented_body,
+      optional(seq('extends', ruleFactory.type_specifier)),
+      optional(seq('implements', commaSep1(ruleFactory.type_specifier))),
+      choice(ruleFactory.indented_body, ';'),
     ),
 
-    enum_variant: ruleFactory => prec.right(seq(
+    enum_variant: ruleFactory => prec.right(1, seq(
       'unit',
       field('variant_name', ruleFactory.identifier),
-      optional(field('variant_backing_value', ruleFactory.expression)),
+      optional(field('variant_backing_value', prec.dynamic(-1, ruleFactory.expression))),
+      optional(prec.dynamic(1, seq('(', optional(commaSep1(ruleFactory.type_specifier)), ')'))),
+      optional(ruleFactory.indented_body),
     )),
 
     interface_declaration: ruleFactory => seq(
       optional(ruleFactory.access_modifier),
+      optional('final'),
       'interface',
       field('declared_name', ruleFactory.identifier),
       optional(ruleFactory.generic_parameter_list),
-      optional(seq('extends', ruleFactory._implements_type_list)),
+      optional(seq(choice('extends', 'implements'), commaSep1(field('implemented_interface', ruleFactory.type_specifier)))),
       choice(ruleFactory.indented_body, ';'),
     ),
 
@@ -284,9 +331,11 @@ module.exports = grammar({
 
     parameter_declaration: ruleFactory => choice(
       ruleFactory.self_parameter,
-      '...',
+      seq('&', optional('mut'), ruleFactory.self_parameter),
       seq(
         optional(ruleFactory.access_modifier),
+        optional('readonly'),
+        optional('mut'),
         field('parameter_type', ruleFactory.type_specifier),
         field('declared_name', ruleFactory.identifier),
         optional(choice(
@@ -295,6 +344,7 @@ module.exports = grammar({
         )),
         optional(seq('=', field('default_value', ruleFactory.expression))),
       ),
+      '...',
     ),
 
     self_parameter: _ruleFactory => 'self',
@@ -337,13 +387,9 @@ module.exports = grammar({
 
     generic_parameter: ruleFactory => seq(
       field('type_parameter_name', ruleFactory.identifier),
-      optional(seq(':', ruleFactory._generic_constraint_list)),
+      optional(seq(':', sep1(ruleFactory.type_specifier, '+'))),
+      optional(seq('=', ruleFactory.type_specifier)),
     ),
-
-    _generic_constraint_list: ruleFactory => prec.left(seq(
-      ruleFactory.type_specifier,
-      repeat(seq(',', ruleFactory.type_specifier)),
-    )),
 
     generic_argument_list: ruleFactory => seq(
       '<',
@@ -358,39 +404,88 @@ module.exports = grammar({
 
     type_specifier: ruleFactory => choice(
       ruleFactory.nullable_type,
+      prec.left(1, seq(
+        ruleFactory._base_type,
+        repeat(seq('|', ruleFactory._base_type)),
+      )),
+    ),
+
+    nullable_type: ruleFactory => choice(
+      // prefix ?T
+      prec.right(2, seq('?', field('inner_type', ruleFactory.type_specifier))),
+      // postfix T?
+      prec.left(2, seq(field('inner_type', ruleFactory._base_type), '?')),
+    ),
+
+    _base_type: ruleFactory => choice(
+      ruleFactory.reference_type,
       ruleFactory.pointer_type,
-      ruleFactory.generic_type_specifier,
+      ruleFactory.array_type,
+      ruleFactory.tuple_type,
+      ruleFactory.function_type,
       ruleFactory.callable_type,
       ruleFactory.meta_type,
+      ruleFactory.generic_type_specifier,
+      ruleFactory.parenthesized_type,
       ruleFactory.identifier,
     ),
 
-    pointer_type: ruleFactory => seq(
+    reference_type: ruleFactory => prec.right(seq(
+      '&',
+      optional('mut'),
+      field('referenced_type', ruleFactory.type_specifier),
+    )),
+
+    pointer_type: ruleFactory => prec.right(seq(
       '*',
+      optional('mut'),
       field('pointed_type', ruleFactory.type_specifier),
+    )),
+
+    array_type: ruleFactory => seq(
+      '[',
+      field('element_type', ruleFactory.type_specifier),
+      optional(seq(';', field('array_size', ruleFactory.expression))),
+      ']',
     ),
 
-    nullable_type: ruleFactory => seq(
-      '?',
-      field('inner_type', ruleFactory.type_specifier),
+    tuple_type: ruleFactory => seq(
+      '(',
+      field('tuple_element', ruleFactory.type_specifier),
+      ',',
+      optional(seq(
+        field('tuple_element', ruleFactory.type_specifier),
+        repeat(seq(',', field('tuple_element', ruleFactory.type_specifier))),
+        optional(','),
+      )),
+      ')',
     ),
 
-    generic_type_specifier: ruleFactory => seq(
+    function_type: ruleFactory => prec(1, seq(
+      'function',
+      '(',
+      optional(commaSep1(ruleFactory.type_specifier)),
+      ')',
+      '->',
+      field('return_type', ruleFactory.type_specifier),
+    )),
+
+    generic_type_specifier: ruleFactory => prec(1, seq(
       field('generic_base_name', ruleFactory.identifier),
       ruleFactory.generic_argument_list,
-    ),
+    )),
 
     callable_type: ruleFactory => seq(
       'Callable',
       '<',
       field('callable_return_type', ruleFactory.type_specifier),
-      ',',
-      '<',
       optional(seq(
-        ruleFactory.type_specifier,
-        repeat(seq(',', ruleFactory.type_specifier)),
+        ',',
+        choice(
+          seq('<', optional(commaSep1(ruleFactory.type_specifier)), '>'),
+          commaSep1(ruleFactory.type_specifier),
+        ),
       )),
-      '>',
       '>',
     ),
 
@@ -400,6 +495,8 @@ module.exports = grammar({
       field('meta_inner_type', ruleFactory.type_specifier),
       '>',
     ),
+
+    parenthesized_type: ruleFactory => seq('(', ruleFactory.type_specifier, ')'),
 
     // ==========================================
     // Control Flow
@@ -474,24 +571,6 @@ module.exports = grammar({
       choice('++', '--'),
     )),
 
-    match_statement: ruleFactory => seq(
-      'match',
-      field('matched_subject', ruleFactory.expression),
-      ':',
-      ruleFactory._indent,
-      repeat1(ruleFactory.match_case),
-      ruleFactory._dedent,
-    ),
-
-    match_case: ruleFactory => seq(
-      field('case_pattern', ruleFactory._pattern),
-      '=>',
-      choice(
-        ruleFactory.indented_body,
-        ruleFactory.expression,
-      ),
-    ),
-
     switch_statement: ruleFactory => seq(
       'switch',
       field('switched_subject', ruleFactory.expression),
@@ -532,7 +611,7 @@ module.exports = grammar({
     try_statement: ruleFactory => seq(
       'try',
       ruleFactory.indented_body,
-      repeat1(ruleFactory.except_clause),
+      repeat(ruleFactory.except_clause),
       optional(ruleFactory.finally_clause),
     ),
 
@@ -564,7 +643,7 @@ module.exports = grammar({
 
     variable_declaration: ruleFactory => prec.dynamic(10, prec.right(seq(
       optional(ruleFactory.access_modifier),
-      optional('mut'),
+      repeat(choice('final', 'readonly', 'static', 'mut', 'abstract', 'native', 'virtual', 'override', 'naked', 'async', 'const')),
       field('variable_type', ruleFactory.type_specifier),
       field('declared_name', ruleFactory.identifier),
       optional(seq('=', field('initial_value', ruleFactory.expression))),
@@ -578,7 +657,7 @@ module.exports = grammar({
 
     _assignment_operator: _ruleFactory => choice(
       '=', '+=', '-=', '*=', '/=', '%=',
-      '&=', '|=', '^=', '<<=', '>>=',
+      '&=', '|=', '^=', '<<=', seq('>', '>', '='),
     ),
 
     return_statement: ruleFactory => prec.right(seq(
@@ -588,7 +667,7 @@ module.exports = grammar({
 
     break_statement: _ruleFactory => 'break',
     continue_statement: _ruleFactory => 'continue',
-    pass_statement: _ruleFactory => 'pass',
+    pass_statement: _ruleFactory => choice('pass', '...'),
 
     raise_statement: ruleFactory => prec.right(seq(
       'raise',
@@ -606,12 +685,6 @@ module.exports = grammar({
         ruleFactory.indented_body,
         field('deferred_expression', ruleFactory.expression),
       ),
-    )),
-
-    yield_statement: ruleFactory => prec.right(seq(
-      'yield',
-      optional('from'),
-      field('yielded_expression', ruleFactory.expression),
     )),
 
     expression_statement: ruleFactory => ruleFactory.expression,
@@ -669,16 +742,10 @@ module.exports = grammar({
       )),
     ),
 
-    _assembly_arch_name: ruleFactory => token(choice(
-      seq('x86', '-', '64'),
-      'aarch64',
-      'arm',
-      'riscv64',
-      'riscv32',
-      'mips',
-      'wasm32',
-      'wasm64',
-    )),
+    _assembly_arch_name: ruleFactory => choice(
+      seq('x86', '-', ruleFactory.integer_literal),
+      ruleFactory.identifier,
+    ),
 
     assembly_output_clause: ruleFactory => seq(
       'output',
@@ -722,6 +789,7 @@ module.exports = grammar({
     expression: ruleFactory => choice(
       ruleFactory.match_expression,
       ruleFactory.lambda_expression,
+      ruleFactory.yield_expression,
       ruleFactory.binary_expression,
       ruleFactory.unary_expression,
       ruleFactory.await_expression,
@@ -729,24 +797,23 @@ module.exports = grammar({
       ruleFactory.primary_expression,
     ),
 
-    match_expression: ruleFactory => prec.left(seq(
+    yield_expression: ruleFactory => prec.right(seq(
+      'yield',
+      field('yielded_expression', ruleFactory.expression),
+    )),
+
+    match_expression: ruleFactory => prec.right(seq(
       'match',
       field('matched_subject', ruleFactory.expression),
       'in',
-      choice(
-        seq('{', ruleFactory._match_arm_list, '}'),
-        seq('\\', ruleFactory.match_arm, repeat(seq(',', '\\', ruleFactory.match_arm))),
-      ),
+      optional('\\'),
+      ruleFactory.match_arm,
+      repeat(seq(',', optional('\\'), ruleFactory.match_arm)),
+      optional(','),
     )),
 
-    _match_arm_list: ruleFactory => seq(
-      ruleFactory.match_arm,
-      repeat(seq(',', ruleFactory.match_arm)),
-      optional(','),
-    ),
-
     match_arm: ruleFactory => seq(
-      field('arm_pattern', ruleFactory._pattern),
+      field('arm_pattern', choice('*', ruleFactory.expression)),
       '=>',
       field('arm_result', ruleFactory.expression),
     ),
@@ -784,10 +851,12 @@ module.exports = grammar({
       prec.left(4, seq(field('left_operand', ruleFactory.expression), '^', field('right_operand', ruleFactory.expression))),
       prec.left(5, seq(field('left_operand', ruleFactory.expression), '&', field('right_operand', ruleFactory.expression))),
       prec.left(6, seq(field('left_operand', ruleFactory.expression), choice('==', '!='), field('right_operand', ruleFactory.expression))),
-      prec.left(7, seq(field('left_operand', ruleFactory.expression), choice('<', '<=', '>', '>=', 'in', 'instanceof', 'is', 'subclassof'), field('right_operand', ruleFactory.expression))),
+      prec.left(7, seq(field('left_operand', ruleFactory.expression), choice('<', '<=', '>', '>='), field('right_operand', ruleFactory.expression))),
+      prec.left(7, seq(field('left_operand', ruleFactory.expression), choice('in', 'is'), field('right_operand', ruleFactory.expression))),
+      prec.left(7, seq(field('left_operand', ruleFactory.expression), choice('instanceof', 'subclassof'), field('right_operand', ruleFactory.type_specifier))),
       prec.left(7, seq(field('left_operand', ruleFactory.expression), 'is', 'not', field('right_operand', ruleFactory.expression))),
       prec.left(7, seq(field('left_operand', ruleFactory.expression), 'not', 'in', field('right_operand', ruleFactory.expression))),
-      prec.left(8, seq(field('left_operand', ruleFactory.expression), choice('<<', '>>'), field('right_operand', ruleFactory.expression))),
+      prec.left(8, seq(field('left_operand', ruleFactory.expression), choice('<<', seq('>', '>')), field('right_operand', ruleFactory.expression))),
       prec.left(9, seq(field('left_operand', ruleFactory.expression), choice('+', '-'), field('right_operand', ruleFactory.expression))),
       prec.left(10, seq(field('left_operand', ruleFactory.expression), choice('*', '/', '%'), field('right_operand', ruleFactory.expression))),
       prec.right(11, seq(field('left_operand', ruleFactory.expression), '**', field('right_operand', ruleFactory.expression))),
@@ -803,7 +872,7 @@ module.exports = grammar({
       prec(13, seq('move', field('unary_operand', ruleFactory.expression))),
     ),
 
-    await_expression: ruleFactory => prec(14, seq(
+    await_expression: ruleFactory => prec.right(14, seq(
       'await',
       field('awaited_expression', ruleFactory.expression),
     )),
@@ -842,13 +911,23 @@ module.exports = grammar({
     new_expression: ruleFactory => prec(15, seq(
       'new',
       field('constructed_type', ruleFactory.type_specifier),
-      ruleFactory.argument_list,
+      optional(ruleFactory.argument_list),
     )),
 
-    parenthesized_expression: ruleFactory => seq(
-      '(',
-      ruleFactory.expression,
-      ')',
+    parenthesized_expression: ruleFactory => choice(
+      seq('(', ')'),
+      seq(
+        '(',
+        field('tuple_element', ruleFactory.expression),
+        ',',
+        optional(seq(
+          field('tuple_element', ruleFactory.expression),
+          repeat(seq(',', field('tuple_element', ruleFactory.expression))),
+          optional(','),
+        )),
+        ')',
+      ),
+      seq('(', field('parenthesized_value', ruleFactory.expression), ')'),
     ),
 
     list_literal: ruleFactory => seq(
@@ -890,6 +969,7 @@ module.exports = grammar({
         '[',
         field('comprehension_element', ruleFactory.expression),
         'for',
+        optional(field('iterator_type', ruleFactory.type_specifier)),
         field('iterator_name', ruleFactory.identifier),
         'in',
         field('iterable_source', ruleFactory.expression),
@@ -902,6 +982,7 @@ module.exports = grammar({
         ':',
         field('comprehension_value', ruleFactory.expression),
         'for',
+        optional(field('iterator_type', ruleFactory.type_specifier)),
         field('iterator_name', ruleFactory.identifier),
         'in',
         field('iterable_source', ruleFactory.expression),
@@ -973,7 +1054,7 @@ module.exports = grammar({
     )),
 
     float_literal: _ruleFactory => token(
-      /[0-9](_?[0-9])*\.[0-9](_?[0-9])*/,
+      /[0-9](_?[0-9])*\.[0-9](_?[0-9])*(?:[eE][+-]?[0-9](_?[0-9])*)?/,
     ),
 
     string_literal: _ruleFactory => token(choice(
@@ -1006,3 +1087,12 @@ module.exports = grammar({
     )),
   },
 });
+
+
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(',', rule)));
+}
+
+function sep1(rule, separator) {
+  return seq(rule, repeat(seq(separator, rule)));
+}
