@@ -1,8 +1,30 @@
 (indented_body) @fold
-
+(function_declaration) @fold
+(class_declaration) @fold
+(struct_declaration) @fold
+(enum_declaration) @fold
+(interface_declaration) @fold
+(trait_declaration) @fold
+(implement_declaration) @fold
+(extern_declaration) @fold
+(if_statement) @fold
+(elif_clause) @fold
+(else_clause) @fold
+(while_statement) @fold
+(for_range_statement) @fold
+(for_cstyle_statement) @fold
+(try_statement) @fold
+(except_clause) @fold
+(finally_clause) @fold
+(switch_statement) @fold
+(switch_case) @fold
+(lambda_expression) @fold
+(inline_assembly_statement) @fold
+(assembly_arch_variant) @fold
 (import_item_brace_list) @fold
-
+(export_block) @fold
+(list_literal) @fold
+(dict_literal) @fold
+(set_literal) @fold
 (block_comment) @fold
 (docstring_comment) @fold
-
-(export_block) @fold
